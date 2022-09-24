@@ -4,4 +4,4 @@ git add FR_vocab.csv
 git commit -m "updated the list!"
 git push -u origin main
 
-sleep 15
+sleep 5
