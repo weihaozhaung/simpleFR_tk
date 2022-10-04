@@ -7,7 +7,7 @@
 #%reset
 
 
-# In[1]:
+# In[3]:
 
 
 import pandas as pd
@@ -18,44 +18,43 @@ from tkinter import messagebox
 import csv
 pd.options.mode.chained_assignment = None
 import tkinter.font as font
-import sys
-from datetime import datetime
-sys.path.append('C:\\Users\\Admin\\anaconda3\\Lib\\site-packages')
-
-# In[2]:
-
-
-file_name = 'FR_vocab.csv'
-deja_connu_niveau = 6
-n_per_group = 10
-
-
-# In[3]:
-
-
-mots = pd.read_csv(file_name, sep=';')
 
 
 # In[4]:
 
 
+file_name = 'FR_vocab.csv'
+deja_connu_niveau = 4
+n_per_group = 20
+
+
+# In[55]:
+
+
+mots = pd.read_csv(file_name, sep=';')
+
+
+# In[56]:
+
+
 mots.tail(10)
 
 
-# In[5]:
+# In[57]:
 
 
 mots.loc[np.isnan(mots['stage']), 'stage'] = 0
 mots.loc[np.isnan(mots['etoile']), 'etoile'] = 0
-mots = mots[mots['stage']<deja_connu_niveau]
-mots_connu = mots[mots['stage']>=deja_connu_niveau].copy()
+mots.loc[pd.isna(mots['type']), 'type'] = 'mot regulier'
+mots = mots[(mots['stage']<deja_connu_niveau) & (mots['type'] != "n'importe")]
+mots_connu = mots[(mots['stage']>=deja_connu_niveau) | (mots['type'] == "n'importe")].copy()
 if len(mots_connu)>0:
-	mots_connu.to_csv(f"mots_revise_{datetime.now().date()}_{str(datetime.now().hour).zfill(2)}_{str(datetime.now().minute).zfill(2)}.csv", index=False, encoding='utf-8-sig',sep=';')
+    mots_connu.to_csv(f"mots_revise_{datetime.now().date()}_{str(datetime.now().hour).zfill(2)}_{str(datetime.now().minute).zfill(2)}.csv", index=False, encoding='utf-8-sig',sep=';')
 mots = mots.sort_values(by = 'stage').reset_index(drop=True) 
 mots['group'] = mots.index//n_per_group
 
 
-# In[6]:
+# In[58]:
 
 
 class App(Tk):
@@ -63,12 +62,23 @@ class App(Tk):
         super().__init__()
         self.group_num = 0
         self.vocab_num = 0
-        self.etoile = 0
         self.dictionary = dictionary    
+        
         self.verify_button = Button(self, text="OK!", command=self.verify, font = font.Font(size=25))
-        self.verify_button.grid(row=1, column=11, columnspan=2)
-        self.starred_button = Button(self, text="connais pas", command=self.starred, font = font.Font(size=25))
-        self.starred_button.grid(row=1, column=9, columnspan=2)
+        self.verify_button.grid(row=2, column=11, columnspan=1)
+        
+        self.starred_button = Button(self, text="Important", command=self.starred, font = font.Font(size=25))
+        self.starred_button.grid(row=2, column=10, columnspan=1)
+        
+        self.term_button = Button(self, text="N'importe", command=self.term, font = font.Font(size=25))
+        self.term_button.grid(row=1, column=10, columnspan=1)
+        
+        self.conjunction_button = Button(self, text="Conjunction", command=self.conjunction, font = font.Font(size=25))
+        self.conjunction_button.grid(row=1, column=11, columnspan=1)
+        
+        self.grammaire_button = Button(self, text="Grammaire", command=self.grammaire, font = font.Font(size=25))
+        self.grammaire_button.grid(row=1, column=12, columnspan=1)
+        
         self.label = None
         self.group = None
         self.choice_box = None
@@ -105,12 +115,15 @@ class App(Tk):
             self.choice_box.insert(col, var)
             self.choice_box.grid(row=1, column=0, columnspan=8)
     def starred(self):
-        self.etoile = 1
+        self.dictionary['etoile'].iloc[self.group_num*self.n_per_group+self.vocab_num] += 1
+    def term(self):
+        self.dictionary['type'].iloc[self.group_num*self.n_per_group+self.vocab_num] = "n'importe"
+    def grammaire(self):
+        self.dictionary['type'].iloc[self.group_num*self.n_per_group+self.vocab_num] = "grammaire"
+    def conjunction(self):
+        self.dictionary['type'].iloc[self.group_num*self.n_per_group+self.vocab_num] = "conjunction"
         
     def verify(self):
-        if self.etoile == 1:
-            self.dictionary['etoile'].iloc[self.group_num*self.n_per_group+self.vocab_num] += 1
-            self.etoile = 0
 
         if self.choice_box.get(ACTIVE) == self.get_choices()[1]:
       
@@ -139,12 +152,12 @@ class App(Tk):
         self.dictionary.to_csv(file_name, index=False, encoding='utf-8-sig',sep=';')
 
 
-# In[ ]:
+# In[59]:
 
 
 if __name__ == "__main__":
     app = App(mots, n= n_per_group)
-    app.iconbitmap('icon.ico')
+    app.iconbitmap(r'C:\\Users\\Admin\\Desktop\\FR_learning\\icon.ico')
     app.title('FR learning app')
     app.geometry("1200x500")
     def on_closing():
@@ -153,4 +166,10 @@ if __name__ == "__main__":
             app.destroy()
     app.protocol("WM_DELETE_WINDOW", on_closing)
     app.mainloop()
+
+
+# In[ ]:
+
+
+
 
