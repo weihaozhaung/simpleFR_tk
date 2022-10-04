@@ -67,8 +67,6 @@ class App(Tk):
         self.verify_button = Button(self, text="OK!", command=self.verify, font = font.Font(size=25))
         self.verify_button.grid(row=2, column=11, columnspan=1)
         
-        self.starred_button = Button(self, text="Important", command=self.starred, font = font.Font(size=25))
-        self.starred_button.grid(row=2, column=10, columnspan=1)
         
         self.term_button = Button(self, text="N'importe", command=self.term, font = font.Font(size=25))
         self.term_button.grid(row=1, column=10, columnspan=1)
@@ -114,8 +112,7 @@ class App(Tk):
         for col, var in enumerate(self.get_choices()[2]):
             self.choice_box.insert(col, var)
             self.choice_box.grid(row=1, column=0, columnspan=8)
-    def starred(self):
-        self.dictionary['etoile'].iloc[self.group_num*self.n_per_group+self.vocab_num] += 1
+
     def term(self):
         self.dictionary['type'].iloc[self.group_num*self.n_per_group+self.vocab_num] = "n'importe"
     def grammaire(self):
