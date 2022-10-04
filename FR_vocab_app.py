@@ -44,7 +44,6 @@ mots.tail(10)
 
 
 mots.loc[np.isnan(mots['stage']), 'stage'] = 0
-mots.loc[np.isnan(mots['etoile']), 'etoile'] = 0
 mots.loc[pd.isna(mots['type']), 'type'] = 'mot regulier'
 mots = mots[(mots['stage']<deja_connu_niveau) & (mots['type'] != "n'importe")]
 mots_connu = mots[(mots['stage']>=deja_connu_niveau) | (mots['type'] == "n'importe")].copy()
