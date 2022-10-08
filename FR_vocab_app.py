@@ -94,7 +94,7 @@ class App(Tk):
     
     def updatequestion(self):
         self.group = Label(self,
-              text = '|  ' + str(self.group_num*self.n_per_group + self.vocab_num + 1) + 'e mot',
+              text = '|  ' + str(self.group_num*self.n_per_group + self.vocab_num + 1) + 'e mot / '+ str(len(self.dictionary)),
               font = ("Times New Roman", 12), 
               padx = 10, pady = 10)
         self.group.grid(row=0, column=7, columnspan=6)
