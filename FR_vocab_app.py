@@ -153,7 +153,7 @@ class App(Tk):
 
 if __name__ == "__main__":
     app = App(mots, n= n_per_group)
-    app.iconbitmap(r'C:\\Users\\Admin\\Desktop\\FR_learning\\icon.ico')
+    app.iconbitmap(r'icon.ico')
     app.title('FR learning app')
     app.geometry("1200x500")
     def on_closing():
